@@ -20,6 +20,8 @@ const client = mqtt.connect(brokerUrl, options);
 
 // MQTT topics
 const waterHeightTopic = "sensor/water_height";
+const temperatureTopic = "sensor/temperature";
+const rainTopic = "sensor/rain";
 const damControlTopic = "dam/control";
 
 let currentDamLevel = 0; // Initial dam level
@@ -30,7 +32,7 @@ const damLevels = [0, 20, 40, 60, 80, 100];
 // Handle MQTT connection
 client.on("connect", () => {
   console.log("Connected to MQTT broker");
-  client.subscribe(waterHeightTopic, (err) => {
+  client.subscribe([waterHeightTopic, temperatureTopic, rainTopic], (err) => {
     if (!err) {
       console.log(`Subscribed to topic: ${waterHeightTopic}`);
     }
@@ -43,35 +45,48 @@ client.on("connect", () => {
 
 // Handle incoming MQTT messages
 client.on("message", (topic, message) => {
-  if (topic === waterHeightTopic) {
-    const data = JSON.parse(message.toString());
-    io.emit("waterHeight", data);
+  switch (topic) {
+    case waterHeightTopic: {
+      const data = JSON.parse(message.toString());
+      io.emit("waterHeight", data);
 
-    // Determine appropriate dam level based on water height
-    let newDamLevel;
-    if (data.height > 80) {
-      newDamLevel = 100;
-    } else if (data.height > 60) {
-      newDamLevel = 80;
-    } else if (data.height > 40) {
-      newDamLevel = 60;
-    } else if (data.height > 20) {
-      newDamLevel = 40;
-    } else if (data.height > 0) {
-      newDamLevel = 20;
-    } else {
-      newDamLevel = 0;
+      // Determine appropriate dam level based on water height
+      let newDamLevel;
+      if (data.height > 80) {
+        newDamLevel = 100;
+      } else if (data.height > 60) {
+        newDamLevel = 80;
+      } else if (data.height > 40) {
+        newDamLevel = 60;
+      } else if (data.height > 20) {
+        newDamLevel = 40;
+      } else if (data.height > 0) {
+        newDamLevel = 20;
+      } else {
+        newDamLevel = 0;
+      }
+      // Control the dam if the level needs to be changed
+      if (newDamLevel !== currentDamLevel) {
+        currentDamLevel = newDamLevel;
+        client.publish(
+          damControlTopic,
+          JSON.stringify({ level: currentDamLevel })
+        );
+        console.log(
+          `Dam level set to ${currentDamLevel} due to water height ${data.height}`
+        );
+      }
+      break;
     }
-    // Control the dam if the level needs to be changed
-    if (newDamLevel !== currentDamLevel) {
-      currentDamLevel = newDamLevel;
-      client.publish(
-        damControlTopic,
-        JSON.stringify({ level: currentDamLevel })
-      );
-      console.log(
-        `Dam level set to ${currentDamLevel} due to water height ${data.height}`
-      );
+    case temperatureTopic: {
+      const data = JSON.parse(message.toString());
+      io.emit("temperature", data);
+      break;
+    }
+    case rainTopic: {
+      const data = JSON.parse(message.toString());
+      io.emit("rain", data);
+      break;
     }
   }
 });

@@ -10,6 +10,16 @@ body {
   margin: auto;
 }
 
+#temperatureChart {
+  width: 800px;
+  margin: auto;
+}
+
+#rainChart {
+  width: 800px;
+  margin: auto;
+}
+
 #damLevelChart {
   width: 800px;
   margin: auto;

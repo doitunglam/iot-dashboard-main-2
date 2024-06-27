@@ -34,6 +34,6 @@ client.on('message', (topic, message) => {
 
 // Simulate setting the dam level
 function setDamLevel(targetLevel) {
-    console.log(`Setting dam level to ${level}`);
+    console.log(`Setting dam level to ${targetLevel}`);
     // Add actual hardware control code here if needed
 }

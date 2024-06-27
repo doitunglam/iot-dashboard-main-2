@@ -6,21 +6,21 @@ body {
 }
 
 #waterHeightChart {
-  width: 800px;
+  width: 100%;
   margin: auto;
 }
 
 #temperatureChart {
-  width: 800px;
+  width: 100%;
   margin: auto;
 }
 
 #rainChart {
-  width: 800px;
+  width: 100%;
   margin: auto;
 }
 
 #damLevelChart {
-  width: 800px;
+  width: 100%;
   margin: auto;
 }

@@ -17,7 +17,7 @@ const waterHeightChart = new Chart(waterHeightCtx, {
       {
         label: "Water Height (cm)",
         data: [],
-        borderColor: "rgba(75, 192, 192, 1)",
+        borderColor: "#5CF64A",
         borderWidth: 1,
         fill: false,
       },
@@ -55,7 +55,7 @@ const temperatureChart = new Chart(temperatureCtx, {
       {
         label: "Temperature",
         data: [],
-        borderColor: "rgba(75, 192, 192, 1)",
+        borderColor: "#FF37A6",
         borderWidth: 1,
         fill: false,
       },
